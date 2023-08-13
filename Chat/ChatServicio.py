@@ -143,6 +143,10 @@ chain = MultiPromptChain(router_chain=router_chain,
                          default_chain=default_chain, verbose=True
                         )
 
+def procesarRespuesta(respuesta):
+    respuesta = respuesta.replace("Assistant: ", "")
+    respuesta = respuesta.replace("IA: ", "")
+    return respuesta
 
 @app.route('/envioPreguntaSalud', methods=['POST'])
 def envioPreguntaSalud():
@@ -163,7 +167,7 @@ def envioPreguntaSalud():
     pregunta = f'\n\nContext: {context}\n\n---\n\nDialogue:{preguntas_formateado}\n\n---\n\nQuestion: {question}'
     print(pregunta)
     respuesta = chain.run(pregunta)
-    respuesta = respuesta.replace("Assistant: ", "")
-    return { 'mensaje': respuesta }
+    respuesta = procesarRespuesta(respuesta)
+    return {'mensaje': respuesta}
 
 app.run(port=5051)
